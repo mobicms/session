@@ -22,5 +22,10 @@
                 <directory name="src/"/>
             </errorLevel>
         </UnusedClass>
+        <PossiblyUnusedMethod>
+            <errorLevel type="suppress">
+                <file name="src/SessionInterface.php"/>
+            </errorLevel>
+        </PossiblyUnusedMethod>
     </issueHandlers>
 </psalm>

@@ -25,5 +25,5 @@ Detailed changes can see in the [repository log].
 - Nothing
 
 [repository log]: https://github.com/mobicms/session/commits
-[changelog]: http://keepachangelog.com/en/1.0.0
+[changelog]: https://keepachangelog.com/en/1.1.0/
 [semver]: http://semver.org/spec/v2.0.0.html
