@@ -17,9 +17,16 @@ class SessionMiddlewareFactory
      */
     public function __invoke(ContainerInterface $container): SessionMiddleware
     {
-        /** @var ConfigInterface $configContainer */
-        $configContainer = $container->get(ConfigInterface::class);
-        $config = (array) $configContainer->get('session', []);
+        if ($container->has(ConfigInterface::class)) {
+            /** @var ConfigInterface $configContainer */
+            $configContainer = $container->get(ConfigInterface::class);
+            $config = (array) $configContainer->get('session', []);
+        } elseif ($container->has('config')) {
+            $configArray = (array) $container->get('config');
+            $config = $configArray['session'] ?? [];
+        } else {
+            $config = [];
+        }
 
         $session = new SessionHandler(
             $container->get(PDO::class),

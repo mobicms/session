@@ -108,6 +108,10 @@ class SessionMiddlewareFactoryTest extends MysqlTestCase
 
         $container = $this->createMock(ContainerInterface::class);
         $container
+            ->method('has')
+            ->with(ConfigInterface::class)
+            ->willReturn(true);
+        $container
             ->method('get')
             ->willReturnCallback(
                 fn($val) => match ($val) {
