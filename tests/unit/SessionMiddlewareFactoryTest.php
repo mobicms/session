@@ -26,7 +26,7 @@ class SessionMiddlewareFactoryTest extends MysqlTestCase
 
     public function setUp(): void
     {
-        $this->file = __DIR__ . '/../../stubs/gc.timestamp';
+        $this->file = __DIR__ . '/../stubs/gc.timestamp';
         $this->factory = new SessionMiddlewareFactory();
     }
 
@@ -87,7 +87,7 @@ class SessionMiddlewareFactoryTest extends MysqlTestCase
     public function testFactoryReturnsSessionMiddlewareInstance()
     {
         $loader = new SqlDumpLoader(self::getPdo());
-        $loader->loadFile('install/sql/system.sql');
+        $loader->loadFile('install/sql/tables.sql');
 
         if ($loader->hasErrors()) {
             $this->fail(implode("\n", $loader->getErrors()));

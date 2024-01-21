@@ -20,4 +20,12 @@
             <directory>src</directory>
         </include>
     </source>
+
+    <php>
+        <var name="test_db_host" value="127.0.0.1"/>
+        <var name="test_db_port" value="3306"/>
+        <var name="test_db_user" value="root"/>
+        <var name="test_db_pass" value="root"/>
+        <var name="test_db_name" value="tmp_test_database"/>
+    </php>
 </phpunit>

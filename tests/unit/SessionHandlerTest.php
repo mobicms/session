@@ -28,7 +28,7 @@ class SessionHandlerTest extends MysqlTestCase
     public function setUp(): void
     {
         $loader = new SqlDumpLoader(self::getPdo());
-        $loader->loadFile('install/sql/system.sql');
+        $loader->loadFile('install/sql/tables.sql');
 
         if ($loader->hasErrors()) {
             $this->fail(implode("\n", $loader->getErrors()));
