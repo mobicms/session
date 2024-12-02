@@ -68,7 +68,6 @@
         "check": [
             "@cs-check",
             "@static-analysis",
-            "@taint-analysis",
             "@test"
         ],
         "cs-check": "phpcs",

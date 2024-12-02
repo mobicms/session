@@ -23,8 +23,15 @@ final class SessionHandler implements SessionInterface
     private int $lifeTime = 10800;
 
     private string $sessionId = '';
+
+    /**
+     * @var array<array-key, mixed>
+     */
     private array $data = [];
 
+    /**
+     * @param array<array-key, mixed> $options
+     */
     public function __construct(PDO $pdo, CookieManagerInterface $cookieManager, array $options = [])
     {
         $this->pdo = $pdo;
@@ -36,13 +43,13 @@ final class SessionHandler implements SessionInterface
     {
         $id = trim((string) ($request->getCookieParams()[$this->cookieName] ?? ''));
 
-        if (! empty($id) && strlen($id) == 32) {
+        if ($id !== '' && strlen($id) === 32) {
             $this->sessionId = $id;
 
             $stmt = $this->pdo->prepare('SELECT * FROM `system__session` WHERE `session_id` = :id');
             $stmt->bindValue(':id', $id);
             $stmt->execute();
-            /** @var array|false $result */
+            /** @var array<array-key, mixed>|false $result */
             $result = $stmt->fetch();
 
             if ($result !== false && $result['modified'] > time() - $this->lifeTime) {
@@ -128,6 +135,9 @@ final class SessionHandler implements SessionInterface
         return $response->withHeader('Pragma', 'no-cache');
     }
 
+    /**
+     * @param array<array-key, mixed> $options
+     */
     private function resolveOptions(array $options): void
     {
         if (isset($options['cookie_name'])) {

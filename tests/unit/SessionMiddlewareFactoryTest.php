@@ -12,6 +12,7 @@ use Mobicms\Session\SessionMiddlewareFactory;
 use Mobicms\Testutils\MysqlTestCase;
 use Mobicms\Testutils\SqlDumpLoader;
 use PDO;
+use PHPUnit\Framework\MockObject\Exception;
 use Psr\Container\ContainerInterface;
 
 use function is_file;
@@ -51,7 +52,7 @@ class SessionMiddlewareFactoryTest extends MysqlTestCase
     public function testNeedGarbageCollection(): void
     {
         touch($this->file, time() - 10000);
-        $this->assertTrue(
+        self::assertTrue(
             $this->factory->checkGc(
                 [
                     'gc_timestamp_file' => $this->file,
@@ -64,7 +65,7 @@ class SessionMiddlewareFactoryTest extends MysqlTestCase
     public function testNotNeedGarbageCollection(): void
     {
         touch($this->file);
-        $this->assertFalse(
+        self::assertFalse(
             $this->factory->checkGc(
                 [
                     'gc_timestamp_file' => $this->file,
@@ -81,23 +82,28 @@ class SessionMiddlewareFactoryTest extends MysqlTestCase
         }
 
         $this->factory->checkGc(['gc_timestamp_file' => $this->file]);
-        $this->assertTrue(is_file($this->file));
+        self::assertTrue(is_file($this->file));
     }
 
-    public function testFactoryReturnsSessionMiddlewareInstance()
+    public function testFactoryReturnsSessionMiddlewareInstance(): void
     {
         $loader = new SqlDumpLoader(self::getPdo());
         $loader->loadFile('install/sql/tables.sql');
 
         if ($loader->hasErrors()) {
-            $this->fail(implode("\n", $loader->getErrors()));
+            self::fail(implode("\n", $loader->getErrors()));
         }
 
         touch($this->file, time() - 10000);
         $result = (new SessionMiddlewareFactory())($this->getContainer(['gc_timestamp_file' => $this->file]));
-        $this->assertInstanceOf(SessionMiddleware::class, $result);
+        /** @phpstan-ignore staticMethod.alreadyNarrowedType */
+        self::assertInstanceOf(SessionMiddleware::class, $result);
     }
 
+    /**
+     * @param array<array-key, string> $options
+     * @throws Exception
+     */
     private function getContainer(array $options): ContainerInterface
     {
         $config = $this->createMock(ConfigInterface::class);
@@ -117,7 +123,8 @@ class SessionMiddlewareFactoryTest extends MysqlTestCase
                 fn($val) => match ($val) {
                     ConfigInterface::class => $config,
                     PDO::class => self::getPdo(),
-                    CookieManagerInterface::class => $this->createMock(CookieManagerInterface::class)
+                    CookieManagerInterface::class => $this->createMock(CookieManagerInterface::class),
+                    default => null,
                 }
             );
 

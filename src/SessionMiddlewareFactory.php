@@ -41,6 +41,9 @@ class SessionMiddlewareFactory
         return new SessionMiddleware($session);
     }
 
+    /**
+     * @param array<array-key, mixed> $config
+     */
     public function checkGc(array $config): bool
     {
         $file = (string) ($config['gc_timestamp_file'] ?? '');

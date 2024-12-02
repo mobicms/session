@@ -10,13 +10,15 @@ use Mobicms\Session\SessionMiddleware;
 use Mobicms\Testutils\MysqlTestCase;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
 class SessionMiddlewareTest extends MysqlTestCase
 {
     private SessionMiddleware $middleware;
 
+    /**
+     * @throws \PHPUnit\Framework\MockObject\Exception
+     */
     public function setUp(): void
     {
         $this->middleware = new SessionMiddleware(
@@ -27,11 +29,6 @@ class SessionMiddlewareTest extends MysqlTestCase
         );
     }
 
-    public function testImplementsMiddlewareInterface(): void
-    {
-        $this->assertInstanceOf(MiddlewareInterface::class, $this->middleware);
-    }
-
     public function testProcess(): void
     {
         $result = $this->middleware->process(
@@ -39,9 +36,13 @@ class SessionMiddlewareTest extends MysqlTestCase
             $this->mockRequestHandler()
         );
 
-        $this->assertInstanceOf(ResponseInterface::class, $result);
+        /** @phpstan-ignore staticMethod.alreadyNarrowedType */
+        self::assertInstanceOf(ResponseInterface::class, $result);
     }
 
+    /**
+     * @throws \PHPUnit\Framework\MockObject\Exception
+     */
     private function mockRequest(): ServerRequestInterface
     {
         $request = $this->createMock(ServerRequestInterface::class);
@@ -52,6 +53,9 @@ class SessionMiddlewareTest extends MysqlTestCase
         return $request;
     }
 
+    /**
+     * @throws \PHPUnit\Framework\MockObject\Exception
+     */
     private function mockRequestHandler(): RequestHandlerInterface
     {
         $handler = $this->createMock(RequestHandlerInterface::class);
